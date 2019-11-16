@@ -1,11 +1,12 @@
 package Parallel.DBSCAN;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-public class DBSCANexecuter {
+public class DBSCANexecuter implements Serializable {
 
 	private double eps = 30;
 

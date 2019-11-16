@@ -50,7 +50,7 @@ public class App {
 		});
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
-
+		
 		points.foreachPartition(a -> dbscan.clustering(a));
 //		for (Point p : points.collect()) {
 //			System.out.println(p.getX() + " " + p.getY() + " " + p.getNum());
