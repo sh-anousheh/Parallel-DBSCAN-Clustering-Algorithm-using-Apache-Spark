@@ -1,6 +1,8 @@
 package Parallel.DBSCAN;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,9 +48,13 @@ public class App {
 			return p;
 
 		});
-		for (Point p : points.collect()) {
-			System.out.println(p.getX() + " " + p.getY() + " " + p.getNum());
-		}
+
+		DBSCANexecuter dbscan = new DBSCANexecuter();
+
+		points.foreachPartition(a -> dbscan.clustering(a));
+//		for (Point p : points.collect()) {
+//			System.out.println(p.getX() + " " + p.getY() + " " + p.getNum());
+//		}
 
 	}
 
