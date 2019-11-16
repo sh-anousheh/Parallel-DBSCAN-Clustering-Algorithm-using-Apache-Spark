@@ -9,7 +9,7 @@ public class App {
 
 		System.setProperty("hadoop.home.dir", "D:\\winutils");// should be added in any Spark project
 		String logFile = "D:\\Spark\\README.md";
-		SparkSession spark = SparkSession.builder().appName("Simple Application").config("spark.master", "local")
+		SparkSession spark = SparkSession.builder().appName("App").config("spark.master", "local")
 				.getOrCreate();// Use in any Spark project
 		Dataset<String> logData = spark.read().textFile(logFile).cache();
 
