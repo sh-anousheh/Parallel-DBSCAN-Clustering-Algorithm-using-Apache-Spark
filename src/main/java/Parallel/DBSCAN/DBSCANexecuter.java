@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 
 public class DBSCANexecuter implements Serializable {
 
@@ -80,34 +79,6 @@ public class DBSCANexecuter implements Serializable {
 		} else {
 
 			System.out.println("there is no noise!!");
-
-		}
-		System.out.println("\nenter the instance that you whant to know its cluster:(number of row)");
-
-		Scanner reader = new Scanner(System.in);
-
-		int num = Integer.parseInt(reader.next());
-
-		reader.close();
-
-		int cl = 0;
-
-		for (Point p : points) {
-
-			if (p.getNum() == num) {
-
-				cl = p.getClId();
-
-			}
-		}
-
-		if (cl != -1) {
-
-			System.out.println(String.format("its cluster is : %s ", cl));
-
-		} else {
-
-			System.out.println("its noise!!");
 
 		}
 

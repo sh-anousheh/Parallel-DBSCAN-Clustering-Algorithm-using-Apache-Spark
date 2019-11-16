@@ -13,7 +13,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 public class App {
 	public static void main(String[] args) {
 
-		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local");
+		// taeen mikonam tu chandta thread bashe
+		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[2]");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 
 		// List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
@@ -50,11 +51,8 @@ public class App {
 		});
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
-		
+
 		points.foreachPartition(a -> dbscan.clustering(a));
-//		for (Point p : points.collect()) {
-//			System.out.println(p.getX() + " " + p.getY() + " " + p.getNum());
-//		}
 
 	}
 
