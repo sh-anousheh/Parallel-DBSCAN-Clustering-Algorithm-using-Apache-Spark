@@ -1,23 +1,23 @@
 package Parallel.DBSCAN;
 
-import org.apache.spark.sql.SparkSession;
-import org.apache.spark.api.java.function.FilterFunction;
-import org.apache.spark.sql.Dataset;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 
 public class App {
 	public static void main(String[] args) {
 
-		System.setProperty("hadoop.home.dir", "D:\\winutils");// should be added in any Spark project
-		String logFile = "D:\\Spark\\README.md";
-		SparkSession spark = SparkSession.builder().appName("App").config("spark.master", "local")
-				.getOrCreate();// Use in any Spark project
-		Dataset<String> logData = spark.read().textFile(logFile).cache();
+		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local");
+		JavaSparkContext sc = new JavaSparkContext(conf);
 
-		long numAs = logData.filter((FilterFunction<String>) (s -> s.contains("a"))).count();
-		long numBs = logData.filter((FilterFunction<String>) (s -> s.contains("b"))).count();
+		List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
+		JavaRDD<Integer> distData = sc.parallelize(data);
 
-		System.out.println("Lines with a: " + numAs + ", lines with b: " + numBs);
+		// System.out.println(distData.reduce((a, b) -> a + b));
 
-		spark.stop();
 	}
+
 }
