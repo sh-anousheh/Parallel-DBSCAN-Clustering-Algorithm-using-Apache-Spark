@@ -27,10 +27,27 @@ public class App {
 
 		String inputFile = root + "\\" + fileName;
 
-		JavaRDD<String> distFile = sc.textFile(inputFile);
+		JavaRDD<String> lines = sc.textFile(inputFile);
 
-		for (String S : distFile.collect()) {
-			System.out.println(S);
+		// int i = 0;
+
+		JavaRDD<Point> points = lines.map(s -> {
+
+			Point p = new Point();
+
+			String[] splited = s.split("\t");
+
+			p.setX(Double.parseDouble(splited[0]));
+
+			p.setY(Double.parseDouble(splited[1]));
+
+			// p.setNum(i + 1);
+
+			return p;
+
+		});
+		for (Point p : points.collect()) {
+			System.out.println(p.getX() + " " + p.getY() + " " + p.getNum());
 		}
 
 	}
