@@ -1,12 +1,11 @@
 package Parallel.DBSCAN;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.spark.SparkConf;
+import org.apache.spark.TaskContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
@@ -14,7 +13,7 @@ public class App {
 	public static void main(String[] args) {
 
 		// taeen mikonam tu chandta thread bashe [2]
-		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[2]");
+		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[4]");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 
 		// List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
@@ -34,6 +33,8 @@ public class App {
 
 		JavaRDD<Point> points = lines.map(s -> {
 
+			int partionId = TaskContext.getPartitionId();
+
 			Point p = new Point();
 
 			String[] splited = s.split("\t");
@@ -41,6 +42,8 @@ public class App {
 			p.setX(Double.parseDouble(splited[0]));
 
 			p.setY(Double.parseDouble(splited[1]));
+			
+			p.SetPartionId(partionId);
 
 			return p;
 
@@ -53,7 +56,6 @@ public class App {
 		JavaRDD<List<Point>> res = points.mapPartitions(a -> dbscan.clustering(a, cluster));
 
 		List<List<Point>> clusters = res.collect();
-
 		int sum = 0;
 
 		for (int i = 0; i < clusters.size(); i++) {
@@ -74,6 +76,9 @@ public class App {
 			System.out.println("there is no noise!!");
 
 		}
+
+		System.out.println("the number of partions are: " + res.getNumPartitions());
+
 	}
 
 }

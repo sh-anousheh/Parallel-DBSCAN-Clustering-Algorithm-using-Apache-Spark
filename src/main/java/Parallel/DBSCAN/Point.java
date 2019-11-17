@@ -12,6 +12,18 @@ public class Point implements Serializable {
 
 	private int clId;
 
+	private int partionId;
+
+	public int GetPartionId() {
+
+		return partionId;
+	}
+
+	public void SetPartionId(int _partionId) {
+
+		this.partionId = _partionId;
+	}
+
 	public int getNum() {
 
 		return num;

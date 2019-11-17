@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.spark.TaskContext;
+
 public class DBSCANexecuter implements Serializable {
 
 	private double eps = 30;
@@ -16,6 +18,8 @@ public class DBSCANexecuter implements Serializable {
 	}
 
 	public Iterator<List<Point>> clustering(Iterator<Point> a, List<Point> cluster) {
+
+		int partionId = TaskContext.getPartitionId();
 
 		List<List<Point>> clusters = new ArrayList<List<Point>>();
 
@@ -83,6 +87,7 @@ public class DBSCANexecuter implements Serializable {
 		}
 
 		return clusters.iterator();
+
 	}
 
 	private boolean ExpandCluster(List<Point> points, Point p, int clid, double eps, int minPts) {
