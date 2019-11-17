@@ -14,7 +14,7 @@ public class App {
 	public static void main(String[] args) {
 
 		// taeen mikonam tu chandta thread bashe [2]
-		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[1]");
+		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[2]");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 
 		// List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
@@ -32,8 +32,6 @@ public class App {
 
 		JavaRDD<String> lines = sc.textFile(inputFile);
 
-		// int i = 0;
-
 		JavaRDD<Point> points = lines.map(s -> {
 
 			Point p = new Point();
@@ -44,15 +42,11 @@ public class App {
 
 			p.setY(Double.parseDouble(splited[1]));
 
-			// p.setNum(i + 1);
-
 			return p;
 
 		});
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
-
-		// points.foreachPartition(a -> dbscan.clustering(a));
 
 		List<Point> cluster = new ArrayList<Point>();
 
@@ -62,11 +56,11 @@ public class App {
 
 		int sum = 0;
 
-		for (int i = 1; i < clusters.size(); i++) {
+		for (int i = 0; i < clusters.size(); i++) {
 
 			sum += clusters.get(i).size();
 
-			System.out.println(String.format("Cluster  %s   number of points : %s", i, clusters.get(i).size()));
+			System.out.println(String.format("Cluster  %s   number of points : %s", i + 1, clusters.get(i).size()));
 		}
 		sum = 8614 - sum;
 

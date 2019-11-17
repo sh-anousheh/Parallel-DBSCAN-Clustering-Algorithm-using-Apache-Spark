@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.spark.api.java.JavaRDD;
-
 public class DBSCANexecuter implements Serializable {
 
 	private double eps = 30;
@@ -17,13 +15,11 @@ public class DBSCANexecuter implements Serializable {
 
 	}
 
-//	public void clustering(Iterator<Point> a) {
-
 	public Iterator<List<Point>> clustering(Iterator<Point> a, List<Point> cluster) {
 
 		List<List<Point>> clusters = new ArrayList<List<Point>>();
 
-		List<Point> points = new ArrayList();
+		List<Point> points = new ArrayList<Point>();
 
 		a.forEachRemaining(points::add);
 
@@ -51,7 +47,7 @@ public class DBSCANexecuter implements Serializable {
 			}
 		}
 
-		for (int i = 0; i <= max; i++) {
+		for (int i = 0; i < max; i++) {
 
 			clusters.add(new ArrayList<Point>());
 		}
@@ -60,18 +56,18 @@ public class DBSCANexecuter implements Serializable {
 
 			if (p.getClId() > 0) {
 
-				clusters.get(p.getClId()).add(p);
+				clusters.get(p.getClId() - 1).add(p);
 
 			}
 		}
 
 		int sum = 0;
 
-		for (int i = 1; i < clusters.size(); i++) {
+		for (int i = 0; i < clusters.size(); i++) {
 
 			sum += clusters.get(i).size();
 
-			System.out.println(String.format("Cluster  %s   number of points : %s", i, clusters.get(i).size()));
+			System.out.println(String.format("Cluster  %s   number of points : %s", i + 1, clusters.get(i).size()));
 		}
 		sum = 8614 - sum;
 
