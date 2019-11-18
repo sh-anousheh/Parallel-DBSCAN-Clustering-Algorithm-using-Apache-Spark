@@ -76,7 +76,7 @@ public class DBSCANexecuter implements Serializable {
 
 			System.out.println(String.format("Cluster  %s   number of points : %s", i + 1, clusters.get(i).size()));
 		}
-		sum = 8614 - sum;
+		sum = points.size() - sum;
 
 		if (sum > 0)
 
@@ -165,10 +165,8 @@ public class DBSCANexecuter implements Serializable {
 	}
 
 	private void placeSeedsInExecutors() {
-		
+
 		int par_A = TaskContext.getPartitionId();
-		
-		
 
 	}
 

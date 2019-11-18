@@ -12,14 +12,9 @@ import org.apache.spark.api.java.JavaSparkContext;
 public class App {
 	public static void main(String[] args) {
 
-		// taeen mikonam tu chandta thread bashe [2]
+		// Decide on the number of threads [2]
 		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[4]");
 		JavaSparkContext sc = new JavaSparkContext(conf);
-
-		// List<Integer> data = Arrays.asList(1, 2, 3, 4, 5);
-		// JavaRDD<Integer> distData = sc.parallelize(data);
-		// System.out.println(distData.reduce((a, b) -> a + b));
-		// ----------------------------------------------------
 
 		String fileName = "stp.txt";
 
@@ -35,13 +30,13 @@ public class App {
 
 			// int partionId = TaskContext.getPartitionId();
 
-			Point p = new Point();
-
 			String[] splited = s.split("\t");
 
-			p.setX(Double.parseDouble(splited[0]));
+			double x = Double.parseDouble(splited[0]);
 
-			p.setY(Double.parseDouble(splited[1]));
+			double y = Double.parseDouble(splited[1]);
+
+			Point p = new Point(x, y);
 
 			// p.SetPartionId(partionId);
 
@@ -49,7 +44,6 @@ public class App {
 
 		});
 
-		
 		// points.foreach(p -> System.out.println(p.GetPartionId()));
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
@@ -59,7 +53,7 @@ public class App {
 		JavaRDD<List<Point>> res = points.mapPartitions(a -> dbscan.clustering(a, cluster));
 
 		List<List<Point>> clusters = res.collect();
-		int sum = 0;
+		long sum = 0;
 
 		for (int i = 0; i < clusters.size(); i++) {
 
@@ -67,7 +61,7 @@ public class App {
 
 			System.out.println(String.format("Cluster  %s   number of points : %s", i + 1, clusters.get(i).size()));
 		}
-		sum = 8614 - sum;
+		sum = points.count() - sum;
 
 		if (sum > 0)
 

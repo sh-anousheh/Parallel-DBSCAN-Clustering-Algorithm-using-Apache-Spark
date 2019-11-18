@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 public class Point implements Serializable {
 
-	private int num;
-
 	private double x;
 
 	private double y;
@@ -13,6 +11,14 @@ public class Point implements Serializable {
 	private int clId;
 
 	private int partionId;
+
+	public Point(double x, double y) {
+
+		this.x = x;
+
+		this.y = y;
+
+	}
 
 	public int GetPartionId() {
 
@@ -24,39 +30,9 @@ public class Point implements Serializable {
 		this.partionId = _partionId;
 	}
 
-	public int getNum() {
-
-		return num;
-	}
-
-	public double getX() {
-
-		return x;
-	}
-
-	public double getY() {
-
-		return y;
-	}
-
 	public int getClId() {
 
 		return clId;
-	}
-
-	public void setNum(int _num) {
-
-		num = _num;
-	}
-
-	public void setX(double _x) {
-
-		x = _x;
-	}
-
-	public void setY(double _y) {
-
-		y = _y;
 	}
 
 	public void setClId(int _clId) {
