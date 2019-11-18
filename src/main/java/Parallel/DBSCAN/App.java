@@ -33,7 +33,7 @@ public class App {
 
 		JavaRDD<Point> points = lines.map(s -> {
 
-			int partionId = TaskContext.getPartitionId();
+			// int partionId = TaskContext.getPartitionId();
 
 			Point p = new Point();
 
@@ -42,12 +42,15 @@ public class App {
 			p.setX(Double.parseDouble(splited[0]));
 
 			p.setY(Double.parseDouble(splited[1]));
-			
-			p.SetPartionId(partionId);
+
+			// p.SetPartionId(partionId);
 
 			return p;
 
 		});
+
+		
+		// points.foreach(p -> System.out.println(p.GetPartionId()));
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
 

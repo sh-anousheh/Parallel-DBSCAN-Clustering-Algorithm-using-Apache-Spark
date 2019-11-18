@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.hadoop.mapred.Task;
+import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptCompletionEvent;
 import org.apache.spark.TaskContext;
+import org.apache.spark.scheduler.TaskScheduler;
 
 public class DBSCANexecuter implements Serializable {
 
@@ -19,7 +22,7 @@ public class DBSCANexecuter implements Serializable {
 
 	public Iterator<List<Point>> clustering(Iterator<Point> a, List<Point> cluster) {
 
-		int partionId = TaskContext.getPartitionId();
+		// int partionId = TaskContext.getPartitionId();
 
 		List<List<Point>> clusters = new ArrayList<List<Point>>();
 
@@ -35,7 +38,7 @@ public class DBSCANexecuter implements Serializable {
 
 			if (p.getClId() == 0) {
 
-				if (ExpandCluster(points, p, clid, eps, minpts))
+				if (expandCluster(points, p, clid, eps, minpts))
 
 					clid++;
 			}
@@ -90,9 +93,9 @@ public class DBSCANexecuter implements Serializable {
 
 	}
 
-	private boolean ExpandCluster(List<Point> points, Point p, int clid, double eps, int minPts) {
+	private boolean expandCluster(List<Point> points, Point p, int clid, double eps, int minPts) {
 
-		List<Point> seeds = RegionQuery(points, p, eps);
+		List<Point> seeds = regionQuery(points, p, eps);
 
 		if (seeds.size() < minPts) {
 
@@ -115,13 +118,15 @@ public class DBSCANexecuter implements Serializable {
 
 				Point currentP = seeds.get(0);
 
-				List<Point> result = RegionQuery(points, currentP, eps);
+				// place seeds processing for currentP
 
-				if (result.size() >= minPts) {
+				List<Point> neighbors = regionQuery(points, currentP, eps);
 
-					for (int i = 0; i < result.size(); i++) {
+				if (neighbors.size() >= minPts) {
 
-						Point resultP = result.get(i);
+					for (int i = 0; i < neighbors.size(); i++) {
+
+						Point resultP = neighbors.get(i);
 
 						if (resultP.getClId() == 0 || resultP.getClId() == -1) {
 
@@ -141,7 +146,7 @@ public class DBSCANexecuter implements Serializable {
 		}
 	}
 
-	private List<Point> RegionQuery(List<Point> points, Point p, double eps) {
+	private List<Point> regionQuery(List<Point> points, Point p, double eps) {
 
 		List<Point> region = new ArrayList<Point>();
 
@@ -157,6 +162,14 @@ public class DBSCANexecuter implements Serializable {
 		}
 
 		return region;
+	}
+
+	private void placeSeedsInExecutors() {
+		
+		int par_A = TaskContext.getPartitionId();
+		
+		
+
 	}
 
 }
