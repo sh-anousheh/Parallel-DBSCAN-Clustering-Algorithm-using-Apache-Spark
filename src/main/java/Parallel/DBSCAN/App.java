@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.spark.Partition;
 import org.apache.spark.SparkConf;
 import org.apache.spark.TaskContext;
 import org.apache.spark.api.java.JavaRDD;
@@ -26,9 +27,13 @@ public class App {
 
 		JavaRDD<String> lines = sc.textFile(inputFile);
 
+		JavaRDD<String> randomLines = lines.sample(false, 0.1);// ba ehtemal e 0.1 barmidare
+
+		lines.union(randomLines);
+
 		JavaRDD<Point> points = lines.map(s -> {
 
-			// int partionId = TaskContext.getPartitionId();
+			int partionId = TaskContext.getPartitionId();
 
 			String[] splited = s.split("\t");
 
@@ -38,13 +43,31 @@ public class App {
 
 			Point p = new Point(x, y);
 
-			// p.SetPartionId(partionId);
+			p.setPartionId(partionId);
 
 			return p;
 
 		});
 
-		// points.foreach(p -> System.out.println(p.GetPartionId()));
+		List<Point> temp = points.collect();
+
+		points.foreach(p1 -> {
+
+			temp.forEach(p2 -> {
+
+				if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
+
+					if (p1.getPartionId() != p2.getPartionId())
+
+					{
+						p1.setIsSeed(true);
+
+						p2.setIsSeed(true);
+					}
+				}
+
+			});
+		});
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
 
@@ -53,6 +76,7 @@ public class App {
 		JavaRDD<List<Point>> res = points.mapPartitions(a -> dbscan.clustering(a, cluster));
 
 		List<List<Point>> clusters = res.collect();
+
 		long sum = 0;
 
 		for (int i = 0; i < clusters.size(); i++) {

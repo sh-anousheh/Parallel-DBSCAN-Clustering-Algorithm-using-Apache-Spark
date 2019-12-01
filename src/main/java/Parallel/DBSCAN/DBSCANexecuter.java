@@ -30,6 +30,8 @@ public class DBSCANexecuter implements Serializable {
 
 		a.forEachRemaining(points::add);
 
+		discardRedundant(points, a);
+
 		int clid = 1;
 
 		for (int i = 0; i < points.size(); i++) {
@@ -164,10 +166,19 @@ public class DBSCANexecuter implements Serializable {
 		return region;
 	}
 
-	private void placeSeedsInExecutors() {
+	private void discardRedundant(List<Point> points, Iterator<Point> a) {
 
-		int par_A = TaskContext.getPartitionId();
+		a.forEachRemaining(p1 -> {
 
+			points.forEach(p2 -> {
+
+				if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
+					points.remove(p2);
+				}
+
+			});
+
+		});
 	}
 
 }
