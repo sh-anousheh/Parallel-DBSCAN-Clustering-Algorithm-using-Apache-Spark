@@ -70,26 +70,26 @@ public class DBSCANexecuter implements Serializable {
 			}
 		}
 
-		int sum = 0;
-
-		for (int i = 0; i < clusters.size(); i++) {
-
-			sum += clusters.get(i).size();
-
-			System.out.println(String.format("Cluster  %s   number of points : %s", i + 1, clusters.get(i).size()));
-		}
-		sum = points.size() - sum;
-
-		if (sum > 0)
-
-		{
-			System.out.println(String.format("\n%s points are noise.", sum));
-
-		} else {
-
-			System.out.println("there is no noise!!");
-
-		}
+		/*
+		 * int sum = 0;
+		 * 
+		 * for (int i = 0; i < clusters.size(); i++) {
+		 * 
+		 * sum += clusters.get(i).size();
+		 * 
+		 * System.out.println(String.format("Cluster  %s   number of points : %s", i +
+		 * 1, clusters.get(i).size())); } sum = points.size() - sum;
+		 * 
+		 * if (sum > 0)
+		 * 
+		 * { System.out.println(String.format("\n%s points are noise.", sum));
+		 * 
+		 * } else {
+		 * 
+		 * System.out.println("there is no noise!!");
+		 * 
+		 * }
+		 */
 
 		return clusters.iterator();
 

@@ -11,7 +11,10 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
 public class App {
+
 	public static void main(String[] args) {
+
+		App app = new App();
 
 		// Decide on the number of threads [2]
 		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[4]");
@@ -77,6 +80,8 @@ public class App {
 
 		List<List<Point>> clusters = res.collect();
 
+		clusters = app.mergeClusters(clusters);/////farghi nakard
+
 		long sum = 0;
 
 		for (int i = 0; i < clusters.size(); i++) {
@@ -99,6 +104,70 @@ public class App {
 		}
 
 		System.out.println("the number of partions are: " + res.getNumPartitions());
+
+	}
+
+	private List<List<Point>> mergeClusters(List<List<Point>> clusters) {
+
+		String unFinished = "unfinished";
+
+		String finished = "finished";
+
+		String[] status = new String[clusters.size()];
+
+		for (String S : status) {
+
+			S = unFinished;
+		}
+
+		for (int i = 0; i < clusters.size() - 1; i++) {
+
+			if (status[i] == unFinished) {
+
+				for (Point p1 : clusters.get(i)) {
+
+					if (p1.getIsSeed()) {
+
+						for (int j = i + 1; j < clusters.size(); j++) {
+
+							for (Point p2 : clusters.get(j)) {
+
+								if (p1.getIsSeed() && p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
+
+									clusters.get(i).addAll(clusters.get(j));
+
+									clusters.get(i).remove(p2);
+
+									clusters.get(j).clear();
+
+									status[j] = finished;
+
+								}
+
+							}
+						}
+
+					}
+
+				}
+
+				status[i] = finished;
+
+			}
+
+		}
+
+		List<List<Point>> res = new ArrayList<List<Point>>();
+
+		clusters.forEach(c -> {
+
+			if (c.size() > 0) {
+
+				res.add(c);
+			}
+		});
+
+		return res;
 
 	}
 
