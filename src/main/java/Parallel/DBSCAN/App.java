@@ -86,33 +86,42 @@ public class App {
 
 		for (int i = 0; i < clusters.size() - 1; i++) {
 
+			List<Point> seeds = new ArrayList<Point>();
+
+			List<Integer> mergeCandidate = new ArrayList<Integer>();
+
 			if (status[i] == unFinished) {
 
-				for (Point p1 : clusters.get(i)) {
+				for (Point p : clusters.get(i)) {
 
-					if (p1.getIsSeed()) {
+					if (p.getIsSeed()) {
 
-						for (int j = i + 1; j < clusters.size(); j++) {
+						seeds.add(p);
+					}
+				}
 
-							for (Point p2 : clusters.get(j)) {
+				for (Point p1 : seeds) {
 
-								if (p1.getIsSeed() && p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
+					for (int j = i + 1; j < clusters.size(); j++) {
 
-									clusters.get(i).addAll(clusters.get(j));
+						for (Point p2 : clusters.get(j)) {
 
-									clusters.get(i).remove(p2);
+							if (p2.getIsSeed() && p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
 
-									clusters.get(j).clear();
+								mergeCandidate.add(j);
 
-									status[j] = finished;
+								clusters.get(i).remove(p1);
 
-								}
+								status[j] = finished;
 
 							}
 						}
-
 					}
+				}
 
+				for (Integer index : mergeCandidate) {
+
+					clusters.get(i).addAll(clusters.get(index));
 				}
 
 				status[i] = finished;
