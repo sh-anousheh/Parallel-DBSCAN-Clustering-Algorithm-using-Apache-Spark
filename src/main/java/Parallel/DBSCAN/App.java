@@ -12,11 +12,12 @@ public class App {
 
 	public static void main(String[] args) {
 
-		int partitionNum = 8;
+		int partitionNum = 2;
 
 		App app = new App();
 
-		// Decide on the number of threads [2]
+		// SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[*]");
+
 		SparkConf conf = new SparkConf().setAppName("App2").setMaster(String.format("local[%d]", partitionNum));
 
 		JavaSparkContext sc = new JavaSparkContext(conf);
@@ -53,7 +54,9 @@ public class App {
 
 		randomPoints = randomPoints.repartition(points.getNumPartitions());
 
-		points = points.union(randomPoints);
+		points = points.union(randomPoints);// Comment it to have the same result as
+		// serial since there is no point from other clusters for place seeds and merge
+		// after using union, my threads get doubled
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
 
@@ -122,6 +125,8 @@ public class App {
 				for (Integer index : mergeCandidate) {
 
 					clusters.get(i).addAll(clusters.get(index));
+
+					clusters.get(index).clear();
 				}
 
 				status[i] = finished;
