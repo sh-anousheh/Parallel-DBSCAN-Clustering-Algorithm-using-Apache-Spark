@@ -3,8 +3,6 @@ package Parallel.DBSCAN;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.spark.Partition;
 import org.apache.spark.SparkConf;
 import org.apache.spark.TaskContext;
 import org.apache.spark.api.java.JavaRDD;
@@ -14,10 +12,13 @@ public class App {
 
 	public static void main(String[] args) {
 
+		int partitionNum = 8;
+
 		App app = new App();
 
 		// Decide on the number of threads [2]
-		SparkConf conf = new SparkConf().setAppName("App2").setMaster("local[4]");
+		SparkConf conf = new SparkConf().setAppName("App2").setMaster(String.format("local[%d]", partitionNum));
+
 		JavaSparkContext sc = new JavaSparkContext(conf);
 
 		String fileName = "stp.txt";
@@ -29,10 +30,6 @@ public class App {
 		String inputFile = root + "\\" + fileName;
 
 		JavaRDD<String> lines = sc.textFile(inputFile);
-
-		JavaRDD<String> randomLines = lines.sample(false, 0.1);// ba ehtemal e 0.1 barmidare
-
-		lines.union(randomLines);
 
 		JavaRDD<Point> points = lines.map(s -> {
 
@@ -52,25 +49,11 @@ public class App {
 
 		});
 
-		List<Point> temp = points.collect();
+		JavaRDD<Point> randomPoints = points.sample(false, 0.1);// ba ehtemal e 0.1 barmidare
 
-		points.foreach(p1 -> {
+		randomPoints = randomPoints.repartition(points.getNumPartitions());
 
-			temp.forEach(p2 -> {
-
-				if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
-
-					if (p1.getPartionId() != p2.getPartionId())
-
-					{
-						p1.setIsSeed(true);
-
-						p2.setIsSeed(true);
-					}
-				}
-
-			});
-		});
+		points = points.union(randomPoints);
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
 
@@ -80,28 +63,9 @@ public class App {
 
 		List<List<Point>> clusters = res.collect();
 
-		clusters = app.mergeClusters(clusters);/////farghi nakard
+		clusters = app.mergeClusters(clusters);
 
-		long sum = 0;
-
-		for (int i = 0; i < clusters.size(); i++) {
-
-			sum += clusters.get(i).size();
-
-			System.out.println(String.format("Cluster  %s   number of points : %s", i + 1, clusters.get(i).size()));
-		}
-		sum = points.count() - sum;
-
-		if (sum > 0)
-
-		{
-			System.out.println(String.format("\n%s points are noise.", sum));
-
-		} else {
-
-			System.out.println("there is no noise!!");
-
-		}
+		app.printResults(clusters, points.count());
 
 		System.out.println("the number of partions are: " + res.getNumPartitions());
 
@@ -115,9 +79,9 @@ public class App {
 
 		String[] status = new String[clusters.size()];
 
-		for (String S : status) {
+		for (int i = 0; i < status.length; i++) {
 
-			S = unFinished;
+			status[i] = unFinished;
 		}
 
 		for (int i = 0; i < clusters.size() - 1; i++) {
@@ -168,6 +132,31 @@ public class App {
 		});
 
 		return res;
+
+	}
+
+	private void printResults(List<List<Point>> clusters, long pointCount) {
+
+		long sum = 0;
+
+		for (int i = 0; i < clusters.size(); i++) {
+
+			sum += clusters.get(i).size();
+
+			System.out.println(String.format("Cluster  %s   number of points : %s", i + 1, clusters.get(i).size()));
+		}
+		sum = pointCount - sum;
+
+		if (sum > 0)
+
+		{
+			System.out.println(String.format("\n%s points are noise.", sum));
+
+		} else {
+
+			System.out.println("there is no noise!!");
+
+		}
 
 	}
 
