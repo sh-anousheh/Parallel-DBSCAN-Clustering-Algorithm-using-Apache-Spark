@@ -12,7 +12,7 @@ public class App {
 
 	public static void main(String[] args) {
 
-		int partitionNum = 2;
+		int partitionNum = 9;
 
 		App app = new App();
 
@@ -50,7 +50,10 @@ public class App {
 
 		});
 
-		JavaRDD<Point> randomPoints = points.sample(false, 0.1);// ba ehtemal e 0.1 barmidare
+		// The result change by changing the probability of choosing extra points
+		JavaRDD<Point> randomPoints = points.sample(false, 0.1);
+
+		// System.out.print(randomPoints.count());
 
 		randomPoints = randomPoints.repartition(points.getNumPartitions());
 
@@ -87,7 +90,7 @@ public class App {
 			status[i] = unFinished;
 		}
 
-		for (int i = 0; i < clusters.size() - 1; i++) {
+		for (int i = 0; i < clusters.size(); i++) {
 
 			List<Point> seeds = new ArrayList<Point>();
 
@@ -105,11 +108,11 @@ public class App {
 
 				for (Point p1 : seeds) {
 
-					for (int j = i + 1; j < clusters.size(); j++) {
+					for (int j = 0; j < clusters.size() && j != i; j++) {
 
 						for (Point p2 : clusters.get(j)) {
 
-							if (p2.getIsSeed() && p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
+							if (p1.getX() == p2.getX() && p1.getY() == p2.getY()) {
 
 								mergeCandidate.add(j);
 
