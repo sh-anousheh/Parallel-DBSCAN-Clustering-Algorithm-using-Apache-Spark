@@ -26,6 +26,13 @@ public class DBSCANexecuter implements Serializable {
 
 		a.forEachRemaining(points::add);
 
+		// System.out.println(TaskContext.getPartitionId() + " first " + points.size());
+
+		// removeRedundant(points);
+
+		// System.out.println(TaskContext.getPartitionId() + " second " +
+		// points.size());
+
 		int clid = 1;
 
 		for (int i = 0; i < points.size(); i++) {
@@ -149,5 +156,30 @@ public class DBSCANexecuter implements Serializable {
 		}
 
 	}
+
+	/*
+	 * private void removeRedundant(List<Point> points) {
+	 * 
+	 * List<Point> redundants = new ArrayList<Point>();
+	 * 
+	 * for (int i = 0; i < points.size() - 1; i++) {
+	 * 
+	 * for (int j = i + 1; j < points.size(); j++) {
+	 * 
+	 * if (points.get(i).getX() == points.get(j).getX() && points.get(i).getY() ==
+	 * points.get(j).getY()) {
+	 * 
+	 * if (points.get(i).getPartionId() == points.get(j).getPartionId()) {
+	 * 
+	 * redundants.add(points.get(i));
+	 * 
+	 * } } } }
+	 * 
+	 * for (Point p : redundants) {
+	 * 
+	 * points.remove(p);
+	 * 
+	 * } }
+	 */
 
 }
