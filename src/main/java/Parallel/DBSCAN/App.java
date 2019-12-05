@@ -50,16 +50,11 @@ public class App {
 
 		});
 
-		// The result change by changing the probability of choosing extra points
 		JavaRDD<Point> randomPoints = points.sample(false, 0.1);
-
-		// System.out.print(randomPoints.count());
 
 		randomPoints = randomPoints.repartition(points.getNumPartitions());
 
-		points = points.union(randomPoints);// Comment it to have the same result as
-		// serial since there is no point from other clusters for place seeds and merge
-		// after using union, my threads get doubled
+		points = points.union(randomPoints);
 
 		DBSCANexecuter dbscan = new DBSCANexecuter();
 
