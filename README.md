@@ -5,7 +5,7 @@ Full Description: https://sh-anousheh.github.io
 Deliverable Paper:  https://sh-anousheh.github.io/Final_Paper.pdf
 
 ##  Objective
-This implementation is an individual project done for the course COMP 5704: Parallel Algorithms and Applications in Data Science at Carleton University
+This implementation is an individual project done for the course COMP 5704: Parallel Algorithms and Applications in Data Science at Carleton University in the fall semester of 2019.
 
 ## Project Outline
 DBSCAN (Density-based spatial clustering of applications with noise) is an unsupervised learning data clustering approach commonly used in data mining and machine learning. Based on a set of points, DBSCAN groups together points that are close to each other based on a distance measurement and a minimum number of points. Also, this algorithm simply finds outlier points that are in low-density regions. This algorithm is popular since it can divide data into clusters with arbitrary shapes. Moreover, DBSCAN does not require the number of clusters a priori as well as it is insensitive to the order of the points in the dataset.
